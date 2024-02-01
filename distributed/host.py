@@ -23,5 +23,3 @@ client_list = []
 
 
 
-
-
