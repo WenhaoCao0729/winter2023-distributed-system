@@ -6,7 +6,7 @@ from distributed import host, port, receive_multicast, send_multicast, heartbeat
 
 class ChatServer:
     def __init__(self):
-        self.host_address = (host.myIP, port.server)
+        self.host_address = (host.myIP, port.server_port)
         self.sock = self.create_server_socket()
         self.message_queue = queue.Queue()
         self.client_list = []
@@ -68,7 +68,7 @@ class ChatServer:
             host.server_list.append(host.myIP)
             host.leader = host.myIP
 
-        threading.Thread(target=receive_multicast.starting_multicast_receiver, daemon=True).start()
+        threading.Thread(target=receive_multicast.start_multicast_receiver, daemon=True).start()
         threading.Thread(target=heartbeat.start_heartbeat, daemon=True).start()
         threading.Thread(target=self.start_server, daemon=True).start()
 

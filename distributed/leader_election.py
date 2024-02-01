@@ -1,5 +1,6 @@
 import socket
-import host
+
+from distributed import host
 
 #Sort IP addresses in ascending order to form a ring.
 def form_ring(members):

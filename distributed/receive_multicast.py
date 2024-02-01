@@ -8,7 +8,7 @@ from distributed import host, port
 def create_udp_socket():
     """Create a UDP socket configured for multicast."""
     multicast_ip = host.multicast
-    server_address = ('', port.multicast)
+    server_address = ('', port.multicast_port)
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.bind(server_address)
     group = socket.inet_aton(multicast_ip)
@@ -52,7 +52,7 @@ def update_server_state(data, address, sock):
 def start_multicast_receiver():
     """Start the multicast receiver to listen for messages."""
     sock = create_udp_socket()
-    print(f'\n[MULTICAST RECEIVER {host.myIP}] Starting UDP Socket and listening on Port {port.multicast}',
+    print(f'\n[MULTICAST RECEIVER {host.myIP}] Starting UDP Socket and listening on Port {port.multicast_port}',
           file=sys.stderr)
     try:
         while True:

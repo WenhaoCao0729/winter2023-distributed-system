@@ -16,7 +16,7 @@ class ChatClient:
 
         server_exists = send_multicast.sending_join_chat_request_to_multicast()
         if server_exists:
-            leader_address = (host.leader, port.server)
+            leader_address = (host.leader, port.server_port)
             print(f'Connecting to server leader at {leader_address}')
             self.sock.connect(leader_address)
             self.sock.send('JOIN'.encode(host.unicode))

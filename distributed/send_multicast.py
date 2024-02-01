@@ -4,10 +4,10 @@ import struct
 import json
 
 from time import sleep
-import host, port
+from distributed import host, port
 
 # Prepare the multicast address and port
-multicast_address = (host.multicast, port.multicast)
+multicast_address = (host.multicast, port.multicast_port)
 
 def create_udp_socket():
     """Create a UDP socket configured for multicast with a set timeout and TTL."""

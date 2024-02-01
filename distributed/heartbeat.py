@@ -1,7 +1,7 @@
 import socket
 import sys
 from time import sleep
-import host, port, leader_election
+from distributed import host, port, leader_election
 
 def establish_connection(address):
     """Attempt to establish a TCP connection to the given address."""
