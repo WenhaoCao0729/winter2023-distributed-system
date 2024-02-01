@@ -1,25 +1,38 @@
-# this is for all the host related functions
-# this is the main file for the host
-
 import socket
 
+# get own ip address
+def get_own_ip(target_server="8.8.8.8", target_port=80):
+    
+    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
+        sock.connect((target_server, target_port))
+        return sock.getsockname()[0]
 
-#get own ip address
-def get_ip():
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(("8.8.8.8", 80))
-    ip_address = s.getsockname()[0]
-    s.close()
-    return ip_address
+# initialize connection variables
+def initialize_connection_variables():
+    
+    buffer_size = 1024
+    unicode = 'utf-8'
+    return buffer_size, unicode
 
-#this is for all of the connection variables and  global IP variables and state variables
-bufferSize = 1024
-unicode = 'utf-8'
-multicast = '224.0.0.0'
-leader = ''
-neighbour = ''
-server_list = []
-client_list = []
+# initialize global variables
+def initialize_global_variables():
+    
+    multicast = '224.0.0.0'
+    leader = ''
+    neighbour = ''
+    server_list = []
+    client_list = []
+    client_running = False
+    network_changed = False
+    leader_crashed = ''
+    replica_crashed = ''
+    return multicast, leader, neighbour, server_list, client_list, client_running, network_changed, leader_crashed, replica_crashed
 
+# get own ip address
+myIP = get_own_ip()
+
+# initialize variables
+buffer_size, unicode = initialize_connection_variables()
+multicast, leader, neighbour, server_list, client_list, client_running, network_changed, leader_crashed, replica_crashed = initialize_global_variables()
 
 
