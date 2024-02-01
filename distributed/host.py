@@ -12,5 +12,16 @@ def get_ip():
     s.close()
     return ip_address
 
-#this is the host class
+#this is for all of the connection variables and  global IP variables and state variables
+bufferSize = 1024
+unicode = 'utf-8'
+multicast = '224.0.0.0'
+leader = ''
+neighbour = ''
+server_list = []
+client_list = []
+
+
+
+
 
