@@ -2,7 +2,7 @@ import socket
 import sys
 import threading
 import queue
-from distributed import host, port, receive_multicast, send_multicast, heartbeat
+from distributed import host, port, receive_multicast, send_multicast, heartbeat, signature, state_sync
 
 class ChatServer:
     def __init__(self):
@@ -11,6 +11,10 @@ class ChatServer:
         self.message_queue = queue.Queue()
         self.client_list = []
         self.initialize_server()
+        self.private_key, self.public_key = signature.generate_key_pair()
+        self.other_servers = [('127.0.0.1', 5001), ('127.0.0.1', 5002)]
+        threading.Thread(target=self.listen_for_state_updates, daemon=True).start()
+        # Start status synchronization monitoring
 
     def create_server_socket(self):
         """Create and configure the server socket."""
@@ -27,23 +31,62 @@ class ChatServer:
     def send_messages_to_clients(self):
         """Send all messages from the queue to all connected clients."""
         while not self.message_queue.empty():
+            # The loop continues as long as the message queue is not empty
             message = self.message_queue.get()
+            signed_message = signature.sign_message(self.private_key, message)
             for client in self.client_list:
                 client.send(message.encode(host.unicode))
+                client.send(signed_message)     # Send original message and signature
 
     def client_handler(self, client, address):
         """Handle incoming messages from connected clients."""
         while True:
             try:
                 data = client.recv(host.buffer_size)
+                signature_data = client.recv(host.buffer_size)
+                # Receive messages and signatures
                 if not data:
                     self.handle_client_disconnection(client, address)
                     break
-                self.message_queue.put(f'{address} said: {data.decode(host.unicode)}')
-                print(f'Message from {address} ==> {data.decode(host.unicode)}')
+
+                if signature.verify_signature(self.public_key, data.decode(host.unicode), signature_data):
+                    # Verify signature
+                    message = data.decode(host.unicode)
+                    self.message_queue.put(f'{address} said: {data.decode(host.unicode)}')
+                    self.update_state(f'{address} said: {message}')  # update state
+                    print(f'Message from {address} ==> {data.decode(host.unicode)}')
+
+                else:
+                    print("Invalid signature detected")
             except Exception as e:
                 print(e)
                 break
+
+    def update_state(self, new_state):
+        """Update server status and notify other server instances"""
+        # Add new status (message) to message queue
+        self.message_queue.put(new_state)
+
+        # Create a dictionary representing status updates
+        state_update = {
+            'type': 'new_message',
+            'content': new_state
+        }
+        # Send updates to other server instances
+        state_sync.send_state_update(new_state, self.other_servers)
+
+    def listen_for_state_updates(self):
+        """Listen for status updates from other server instances"""
+        state_sync.listen_for_state_updates(5000, self.handle_state_update)
+
+    def handle_state_update(self, state_update):
+        """Handle received status updates"""
+        if state_update['type'] == 'new_message':
+            # Add new received messages to the message queue
+            self.message_queue.put(state_update['content'])
+
+            # You can also perform other necessary synchronization operations here
+            print(f"Received new message update: {state_update['content']}")
 
     def handle_client_disconnection(self, client, address):
         """Handle client disconnection."""

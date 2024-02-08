@@ -54,7 +54,7 @@ def sending_join_chat_request_to_multicast():
     sock.sendto(message, multicast_address)
 
     try:
-        data, address = sock.recvfrom(host.buffer_size)
+        data, _ = sock.recvfrom(host.buffer_size)
         decoded_data = json.loads(data.decode())
         host.leader = decoded_data['leader']
         return True

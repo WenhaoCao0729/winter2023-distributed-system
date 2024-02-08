@@ -16,6 +16,13 @@ def create_udp_socket():
     sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
     return sock
 
+def handle_join_request(address, sock):
+    """Handle a join request from a client."""
+    response = json.dumps({'server_list': host.server_list}).encode()
+    sock.sendto(response, address)
+    print(f'[MULTICAST RECEIVER {host.myIP}] Responded to client {address} with server list\n', file=sys.stderr)
+
+
 def process_received_data(data, address, sock):
     """Process the data received from the multicast group."""
     print(f'\n[MULTICAST RECEIVER {host.myIP}] Received data from {address}\n', file=sys.stderr)
