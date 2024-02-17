@@ -20,7 +20,14 @@ def process_received_data(data, address, sock):
     """Process the data received from the multicast group."""
     print(f'\n[MULTICAST RECEIVER {host.myIP}] Received data from {address}\n', file=sys.stderr)
     decoded_data = json.loads(data.decode())
-    if host.leader == host.myIP and decoded_data['type'] == 'JOIN':
+    print(decoded_data)
+
+    message_type = decoded_data.get('type')
+    # access safety 'type'
+
+    # if host.leader == host.myIP and decoded_data['type'] == 'JOIN':
+    # if host.leader == host.myIP == 'JOIN':
+    if host.leader == host.myIP and message_type == 'JOIN':
         handle_join_request(address, sock)
     elif 'servers' in decoded_data and not decoded_data['servers']:
         handle_server_join(address, sock)
