@@ -2,6 +2,8 @@ import socket
 
 # get own ip address
 def get_own_ip(target_server="8.8.8.8", target_port=80):
+
+# should change
     
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
         sock.connect((target_server, target_port))
@@ -30,6 +32,8 @@ def initialize_global_variables():
 
 # get own ip address
 myIP = get_own_ip()
+# can be changed directly to other IP addr.
+
 
 # initialize variables
 buffer_size, unicode = initialize_connection_variables()
