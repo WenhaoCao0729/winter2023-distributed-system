@@ -43,21 +43,21 @@ class ChatServer:
         while True:
             try:
                 data = client.recv(host.buffer_size)
-                signature_data = client.recv(host.buffer_size)
+                # signature_data = client.recv(host.buffer_size)
                 # Receive messages and signatures
                 if not data:
                     self.handle_client_disconnection(client, address)
                     break
 
-                if signature.verify_signature(self.public_key, data.decode(host.unicode), signature_data):
-                    # Verify signature
-                    message = data.decode(host.unicode)
-                    self.message_queue.put(f'{address} said: {data.decode(host.unicode)}')
-                    self.update_state(f'{address} said: {message}')  # update state
-                    print(f'Message from {address} ==> {data.decode(host.unicode)}')
-
-                else:
-                    print("Invalid signature detected")
+                # if signature.verify_signature(self.public_key, data.decode(host.unicode), signature_data):
+                #     # Verify signature
+                #     message = data.decode(host.unicode)
+                #     self.message_queue.put(f'{address} said: {data.decode(host.unicode)}')
+                #     self.update_state(f'{address} said: {message}')  # update state
+                #     print(f'Message from {address} ==> {data.decode(host.unicode)}')
+                #
+                # else:
+                #     print("Invalid signature detected")
             except Exception as e:
                 print(e)
                 break
