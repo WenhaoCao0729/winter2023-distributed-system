@@ -59,6 +59,7 @@ class ChatServer:
         print(f'\n[SERVER] Starting and listening on {self.host_address}', file=sys.stderr)
         while True:
             client, address = self.sock.accept()
+            # receive_multicast.update_server_list()
             self.client_list.append(client)
             threading.Thread(target=self.client_handler, args=(client, address), daemon=True).start()
 
@@ -66,7 +67,8 @@ class ChatServer:
         """Initialize the server and start the necessary threads."""
         if not send_multicast.sending_request_to_multicast():
             host.server_list.append(host.myIP)
-            host.leader = host.myIP
+            # host.leader = host.myIP
+            host.leader = host.server_list[0]
 
         threading.Thread(target=receive_multicast.start_multicast_receiver, daemon=True).start()
         threading.Thread(target=heartbeat.start_heartbeat, daemon=True).start()

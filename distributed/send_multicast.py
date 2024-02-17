@@ -55,8 +55,11 @@ def sending_join_chat_request_to_multicast():
 
     try:
         data, address = sock.recvfrom(host.buffer_size)
+        print(data,address)
         decoded_data = json.loads(data.decode())
+        print(decoded_data)
         host.leader = decoded_data['leader']
+        print(host.leader)
         return True
     except socket.timeout:
         print(f'[MULTICAST SENDER {host.myIP}] Multicast Receiver not detected -> Chat Server is offline.',
