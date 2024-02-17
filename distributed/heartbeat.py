@@ -34,7 +34,7 @@ def start_heartbeat():
         # Get the server's neighbour using the leader election algorithm.
         neighbour = leader_election.start_leader_election(host.server_list, host.myIP)
         if neighbour:
-            host_address = (neighbour, port.server)
+            host_address = (neighbour, port.server_port)
             if not establish_connection(host_address):
                 handle_neighbour_failure(neighbour)
 
